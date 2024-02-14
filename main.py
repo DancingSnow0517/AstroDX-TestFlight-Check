@@ -9,8 +9,7 @@ ASTRODX_TESTFLIGHTS = {
     "Group B": "https://testflight.apple.com/join/ocj3yptn"
 }
 
-BOT_TOKEN = os.environ.get("BOT_TOKEN")
-PUSH_TARGET = os.environ.get("PUSH_TARGET")
+APP_TOKEN = os.environ.get("APP_TOKEN")
 
 
 class TestFlightStatu(Enum):
@@ -41,16 +40,22 @@ def main():
     print(status_text)
     if open_flag:
         resp = requests.post(
-            "https://www.kookapp.cn/api/v3/direct-message/create",
-            headers={"Authorization": f"Bot {BOT_TOKEN}"},
-            data={
-                "content": status_text,
-                "target_id": PUSH_TARGET,
-                "type": 9
+            'https://wxpusher.zjiecode.com/api/send/message',
+            headers={
+                'Content-Type': 'application/json'
+            },
+            json={
+                'appToken': APP_TOKEN,
+                'summary': '有可用的 AstroDX 测试',
+                'content': status_text,
+                'contentType': 1,
+                'topicIds': [
+                    25948
+                ],
+                'verifyPay': 'false'
             }
         )
-        if resp.json()["code"] != 0:
-            print("Message Push Filed")
+        print(resp.json()["msg"])
 
 
 if __name__ == '__main__':

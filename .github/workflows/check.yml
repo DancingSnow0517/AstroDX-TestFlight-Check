@@ -7,8 +7,7 @@ on:
 jobs:
   check:
     env:
-      BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
-      PUSH_TARGET: ${{ secrets.PUSH_TARGET }}
+      APP_TOKEN: ${{ secrets.APP_TOKEN }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4.1.1
