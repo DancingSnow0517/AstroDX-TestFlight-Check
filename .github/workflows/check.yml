@@ -1,0 +1,21 @@
+name: Check AstroDX TestFligh Status
+on:
+  schedule:
+    - cron: '0/10 * * * *'
+  workflow_dispatch:
+
+jobs:
+  check:
+    env:
+      BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+      PUSH_TARGET: ${{ secrets.PUSH_TARGET }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.1.1
+      - uses: actions/setup-python@v5.0.0
+        with:
+          python-version: '3.10'
+      - name: Install deps
+        run: pip install -r requirements.txt
+      - name: run
+        run: python main.py
