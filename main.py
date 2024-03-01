@@ -8,6 +8,13 @@ ASTRODX_TESTFLIGHTS = {
     "Group A": "https://testflight.apple.com/join/rACTLjPL",
     "Group B": "https://testflight.apple.com/join/ocj3yptn"
 }
+STATUS_BODY = """
+<h1 style=\"text-align: center\">All TestFlights status</h1>
+<h2 style="text-align: center">
+%s
+</h2>
+"""
+LINK_TEMPLATE = "    <a href=\"%s\">%s</a> is %s"
 
 APP_TOKEN = os.environ.get("APP_TOKEN")
 
@@ -30,14 +37,16 @@ def get_flight_status(url: str) -> TestFlightStatu:
 
 
 def main():
-    status_text = "All TestFlights status:\n"
+    status_text = ""
     open_flag = False
     for group, url in ASTRODX_TESTFLIGHTS.items():
         status = get_flight_status(url)
-        status_text += f"[{group}]({url}): This test is {status.name}\n"
+        status_text += LINK_TEMPLATE % (url, group, status.value) + "<br>\n"
         if status == TestFlightStatu.OPEN:
             open_flag = True
-    print(status_text)
+
+    body = STATUS_BODY % status_text.strip('\n')
+    print(body)
     if open_flag:
         resp = requests.post(
             'https://wxpusher.zjiecode.com/api/send/message',
@@ -47,8 +56,8 @@ def main():
             json={
                 'appToken': APP_TOKEN,
                 'summary': '有可用的 AstroDX 测试',
-                'content': status_text,
-                'contentType': 1,
+                'content': body,
+                'contentType': 2,
                 'topicIds': [
                     25948
                 ],
